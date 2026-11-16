@@ -4,7 +4,8 @@
  *
  *   import { auth, db } from './firebase';
  *
- * Config values come from app.json → `expo.extra.firebase`, read through
+ * Config values come from the merged Expo config (`app.config.js` combining
+ * app.json placeholders with the git-ignored firebase.local.json), read through
  * expo-constants (`Constants.expoConfig.extra`). Until the placeholders are
  * replaced (see docs/FIREBASE_SETUP.md), instances can initialize for the UI
  * preview, but repositories reject network operations via the guard below.
@@ -85,7 +86,7 @@ export class FirebaseConfigurationError extends Error {
   readonly code = 'runtrack/firebase-not-configured';
 
   constructor() {
-    super('Firebase is not configured yet. Add your project values in app.json (see docs/FIREBASE_SETUP.md), then retry.');
+    super('Firebase is not configured yet. Add your project values in firebase.local.json (see docs/FIREBASE_SETUP.md), then restart the dev server.');
     this.name = 'FirebaseConfigurationError';
   }
 }

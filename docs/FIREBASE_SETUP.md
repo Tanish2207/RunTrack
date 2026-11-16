@@ -1,8 +1,10 @@
 # Firebase Setup — RunTrack
 
-Keep the `PASTE_` placeholders in `app.json` until the user supplies real project
-values. This checklist configures the **Firebase JS SDK**, not React Native
-Firebase. See the [Expo Firebase guide](https://docs.expo.dev/guides/using-firebase.md).
+Real client values live in the **git-ignored** `firebase.local.json`; the
+committed `app.json` keeps `PASTE_` placeholders, and `app.config.js` merges
+the two (see step 3). This checklist configures the **Firebase JS SDK**, not
+React Native Firebase. See the
+[Expo Firebase guide](https://docs.expo.dev/guides/using-firebase.md).
 
 `src/api/firebase.ts` supports UI preview initialization and warns in development
 when configuration is incomplete. Missing `apiKey`/`projectId` use initialization-only
@@ -46,26 +48,42 @@ Native Maps restrictions separately need `expo.android.package` and
 `expo.ios.bundleIdentifier`. Those identifiers are not yet set in `app.json`;
 choose them before creating a native build (#027), for example `com.runtrack.app`.
 
-## 3. Copy the web config into `app.json`
+## 3. Local (git-ignored) config — `firebase.local.json`
 
-Copy the web app's console-issued values into `expo.extra.firebase`. The current
-configuration guard requires all six fields below to be nonempty and placeholder-free.
-Exact mapping:
+`app.json` is committed with `PASTE_` placeholders and stays that way. The real
+console-issued values live in `firebase.local.json`, which is **git-ignored**;
+`app.config.js` merges it over the placeholders at build time. Copy the web
+app's config there (create the file if missing):
 
-| Firebase console value   | app.json field                          |
-| ------------------------ | --------------------------------------- |
-| `apiKey`                 | `expo.extra.firebase.apiKey`            |
-| `authDomain`             | `expo.extra.firebase.authDomain`        |
-| `projectId`              | `expo.extra.firebase.projectId`         |
-| `storageBucket`          | `expo.extra.firebase.storageBucket`     |
-| `messagingSenderId`      | `expo.extra.firebase.messagingSenderId` |
-| `appId`                  | `expo.extra.firebase.appId`             |
+```json
+{
+  "firebase": {
+    "apiKey": "<apiKey>",
+    "authDomain": "<authDomain>",
+    "projectId": "<projectId>",
+    "storageBucket": "<storageBucket>",
+    "messagingSenderId": "<messagingSenderId>",
+    "appId": "<appId>"
+  }
+}
+```
 
-Replace whole values, including `authDomain` and `storageBucket`; do not derive
-the bucket suffix from the example placeholder. Use the exact console value.
-Restart the dev server with `npx expo start --clear` after editing configuration.
-Keep the guard in place—it checks completeness, not whether credentials are valid
-or the current preview identity is authenticated.
+The `appId` must come from this web registration, not a guessed Android/iOS
+app ID. The current configuration guard requires all six fields to be nonempty
+and placeholder-free. Keep the guard in place — it checks completeness, not
+whether credentials are valid. Never commit `firebase.local.json`; do not put
+real values directly in `app.json` either, or they will end up in git history.
+
+Verify what Expo actually resolved with `npx expo config --type public`.
+
+For `firebase-tools` commands, pass the project explicitly (`.firebaserc`
+stays placeholder in git):
+
+```bash
+npx firebase-tools deploy --only firestore:rules,firestore:indexes --project <project-id>
+```
+
+Restart the dev server with `npx expo start --clear` after changing config.
 
 ## 4. Google Maps keys (SDK 58, #027)
 

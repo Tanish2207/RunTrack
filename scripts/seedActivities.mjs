@@ -24,20 +24,37 @@ import {
   Timestamp,
   collection,
   doc,
-  getDoc,
+  getDocs,
   getFirestore,
+  limit,
+  query,
   serverTimestamp,
   setDoc,
+  where,
 } from 'firebase/firestore';
 import { createInterface } from 'node:readline/promises';
 import { readFileSync } from 'node:fs';
 
-/* ── Configuration from app.json ─────────────────────────────────────────── */
+/* ── Configuration from app.json + git-ignored firebase.local.json ───────── */
 
-const appJson = JSON.parse(
-  readFileSync(new URL('../app.json', import.meta.url), 'utf8'),
-);
-const firebaseConfig = appJson.expo?.extra?.firebase;
+function loadFirebaseConfig() {
+  const appJson = JSON.parse(
+    readFileSync(new URL('../app.json', import.meta.url), 'utf8'),
+  );
+  const base = appJson.expo?.extra?.firebase ?? {};
+  let local = {};
+  try {
+    const localFile = JSON.parse(
+      readFileSync(new URL('../firebase.local.json', import.meta.url), 'utf8'),
+    );
+    local = localFile.firebase ?? {};
+  } catch {
+    // No local file; app.json (possibly app.config.js-merged) is all we have.
+  }
+  return { ...base, ...local };
+}
+
+const firebaseConfig = loadFirebaseConfig();
 
 function missingConfig() {
   const required = ['apiKey', 'authDomain', 'projectId', 'storageBucket',
@@ -337,12 +354,29 @@ async function main() {
   const db = getFirestore(app);
 
   console.log(`\nSigned in as ${email} (uid ${uid}). Seeding…\n`);
+
+  // Rules deny `get` on docs that do not exist yet (resource.data is checked
+  // against the owner), so existence is checked with an owner-scoped list —
+  // the same shape the app's History query uses.
+  let ownedIds;
+  try {
+    const owned = await getDocs(
+      query(collection(db, 'activities'), where('userId', '==', uid), limit(500)),
+    );
+    ownedIds = new Set(owned.docs.map((entry) => entry.id));
+  } catch (error) {
+    console.error(
+      `\n✖ Could not list your activities: ${error.code ?? error}.\n` +
+      '  Deploy firestore.rules first (step 4 of docs/FIREBASE_SETUP.md) — ' +
+      'default-deny rules reject every read.\n');
+    process.exit(1);
+  }
+
   let created = 0;
   let skipped = 0;
   for (const entry of planned) {
     const ref = doc(db, 'activities', `seed-${uid}-${entry.docIdSuffix}`);
-    const existing = await getDoc(ref);
-    if (existing.exists()) {
+    if (ownedIds.has(ref.id)) {
       console.log(`  ⏭  ${entry.label} — already seeded, skipping`);
       skipped++;
       continue;
