@@ -123,6 +123,30 @@ dynamic `app.config.js`/`app.config.ts`; static `app.json` does not evaluate env
 - Never include service-account credentials or any server secret in `expo.extra`,
   a client-side environment variable, or the mobile bundle.
 
+## 6. Demo data seeding (walks, trails, rides)
+
+For demos where physically recording is impractical, `scripts/seedActivities.mjs`
+signs in with a real account and writes 10 realistic activities around Lodha
+Luxuria/Majiwada (Thane) and VJTI/Five Gardens (Matunga) — Upvan Lake walks, a
+Yeoor hills trail hike, Thane creek rides, and campus runs — spread over the
+past two weeks. Routes are generated loops with GPS-style drift; distance,
+duration, pace, calories, and route timestamps are mutually consistent, and
+History/Detail/Maps render them like real recordings.
+
+Run it **after** steps 1–6 above (real config in `app.json`, rules deployed):
+
+```bash
+node scripts/seedActivities.mjs --email you@example.com --password secret
+node scripts/seedActivities.mjs --dry-run   # plan only, no auth, no writes
+```
+
+- Signing in requires an account created via the app's Sign Up screen.
+- Seeding is idempotent: docs use fixed IDs (`seed-<uid>-<slug>`) and existing
+  ones are skipped, so re-running never duplicates.
+- Activities are create-only per `firestore.rules`; the client can never delete
+  them. Remove demo data via the Firebase console by deleting docs whose IDs
+  start with `seed-`.
+
 ## After replacing the placeholders — pending acceptance
 
 - [ ] Launch on a device/simulator and create a **real** Email/Password account;
