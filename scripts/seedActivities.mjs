@@ -400,6 +400,8 @@ async function main() {
     `https://console.firebase.google.com/project/${firebaseConfig.projectId}/firestore/data/~2Factivities\n` +
     `To remove demo data later, delete the docs whose IDs start with "seed-" in the console ` +
     `(the app itself can never delete activities).\n`);
+  // The Firebase SDK keeps the Node event loop alive after writes; exit hard.
+  process.exit(0);
 }
 
 main().catch((error) => {
