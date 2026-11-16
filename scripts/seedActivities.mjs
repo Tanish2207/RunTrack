@@ -156,7 +156,6 @@ function buildLoop({
 // Anchor areas supplied by the user:
 const THANE_HOME = { lat: 19.2017, lng: 72.9743 };  // Lodha Luxuria, Majiwada
 const UPVAN_LAKE = { lat: 19.2206, lng: 72.9753 };  // Upvan Lake, Thane
-const YEOR_TRAIL = { lat: 19.226, lng: 72.97 };    // Yeoor hills, SGNP edge
 const THANE_CREEK = { lat: 19.21, lng: 72.98 };     // Kalwa / creek side
 const VJTI_MATUNGA = { lat: 19.0226, lng: 72.8569 }; // VJTI campus
 const FIVE_GARDENS = { lat: 19.0252, lng: 72.8572 }; // Five Gardens, Matunga
@@ -164,46 +163,32 @@ const KING_CIRCLE = { lat: 19.028, lng: 72.858 };   // King Circle, Matunga
 
 const CALORIES_PER_KM = { run: 72, walk: 52, cycle: 26 };
 
-/** Trails are recorded as slower, longer walks; cycles ride at ~20-24 km/h. */
+/** Cycles ride at ~20-24 km/h; walks stay at a relaxed 12-14 min/km. */
 const PLAN = [
   {
     slug: 'thane-upvan-lake-walk', label: 'Upvan Lake morning walk', type: 'walk',
     center: UPVAN_LAKE, loopKm: 4.2, paceSecPerKm: 780, dayOffset: 2, hour: 6, minute: 45,
   },
   {
-    slug: 'matunga-five-gardens-walk', label: 'Five Gardens lunchtime walk', type: 'walk',
+    slug: 'matunga-five-gardens-walk', label: 'Five Gardens walk', type: 'walk',
     center: FIVE_GARDENS, loopKm: 2.4, paceSecPerKm: 800, dayOffset: 4, hour: 13, minute: 10,
   },
   {
-    slug: 'thane-majiwada-evening-walk', label: 'Evening walk around Majiwada', type: 'walk',
+    slug: 'thane-majiwada-evening-walk', label: 'Evening walk around majiwada', type: 'walk',
     center: THANE_HOME, loopKm: 3.1, paceSecPerKm: 760, dayOffset: 6, hour: 19, minute: 30,
   },
   {
-    slug: 'matunga-vjti-evening-walk', label: 'Walk after college near VJTI', type: 'walk',
+    slug: 'matunga-vjti-evening-walk', label: 'Walk after college', type: 'walk',
     center: VJTI_MATUNGA, loopKm: 3.6, paceSecPerKm: 820, dayOffset: 8, hour: 17, minute: 20,
-  },
-  {
-    slug: 'thane-upvan-lake-run', label: 'Morning run around Upvan Lake', type: 'run',
-    center: UPVAN_LAKE, loopKm: 6.2, paceSecPerKm: 372, dayOffset: 7, hour: 6, minute: 30,
   },
   {
     slug: 'matunga-vjti-run', label: 'Evening run near campus', type: 'run',
     center: VJTI_MATUNGA, loopKm: 5.1, paceSecPerKm: 395, dayOffset: 11, hour: 18, minute: 5,
   },
   {
-    slug: 'yeoor-hills-trail-walk', label: 'Yeoor hills trail hike', type: 'walk',
-    center: YEOR_TRAIL, loopKm: 7.6, paceSecPerKm: 900, dayOffset: 12, hour: 7, minute: 15,
-    wobbleAmp: 0.22, wobbleCount: 5, jitterMeters: 5, stepMeters: 4,
-  },
-  {
     slug: 'thane-creek-cycle', label: 'Long ride along Thane creek', type: 'cycle',
     center: THANE_CREEK, loopKm: 16.5, paceSecPerKm: 168, dayOffset: 9, hour: 7, minute: 0,
     stepMeters: 8, jitterMeters: 6,
-  },
-  {
-    slug: 'yeoor-ghodbunder-cycle', label: 'Hill ride toward Yeoor', type: 'cycle',
-    center: THANE_HOME, loopKm: 11.8, paceSecPerKm: 182, dayOffset: 14, hour: 6, minute: 40,
-    stepMeters: 8, wobbleAmp: 0.2, wobbleCount: 4,
   },
   {
     slug: 'matunga-king-circle-cycle', label: 'Matunga–King Circle loop ride', type: 'cycle',
@@ -212,7 +197,7 @@ const PLAN = [
   },
 ];
 
-const STEP_METERS = { walk: 3, run: 3, cycle: 8, trail: 4 };
+const STEP_METERS = { walk: 3, run: 3, cycle: 8 };
 
 function startDate({ dayOffset, hour, minute }) {
   const date = new Date();

@@ -123,15 +123,15 @@ dynamic `app.config.js`/`app.config.ts`; static `app.json` does not evaluate env
 - Never include service-account credentials or any server secret in `expo.extra`,
   a client-side environment variable, or the mobile bundle.
 
-## 6. Demo data seeding (walks, trails, rides)
+## 6. Demo data seeding (walks, runs, rides)
 
 For demos where physically recording is impractical, `scripts/seedActivities.mjs`
-signs in with a real account and writes 10 realistic activities around Lodha
-Luxuria/Majiwada (Thane) and VJTI/Five Gardens (Matunga) — Upvan Lake walks, a
-Yeoor hills trail hike, Thane creek rides, and campus runs — spread over the
-past two weeks. Routes are generated loops with GPS-style drift; distance,
-duration, pace, calories, and route timestamps are mutually consistent, and
-History/Detail/Maps render them like real recordings.
+signs in with a real account and writes 7 realistic activities around Lodha
+Luxuria/Majiwada (Thane) and VJTI/Five Gardens (Matunga) — Upvan Lake and
+neighborhood walks, campus runs, and Thane creek / King Circle rides — spread
+over the past two weeks. Routes are generated loops with GPS-style drift;
+distance, duration, pace, calories, and route timestamps are mutually
+consistent, and History/Detail/Maps render them like real recordings.
 
 Run it **after** steps 1–6 above (real config in `app.json`, rules deployed):
 
