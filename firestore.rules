@@ -1,0 +1,70 @@
+rules_version = '2';
+
+// RunTrack — Firestore security rules (issue #008, spec §4/§9 item 3).
+//
+// Model:
+//   - Every document is owned by exactly one authenticated user via a
+//     `userId` field (users docs by doc id, activities/heatmapPoints by field).
+//   - No document is world-readable; unauthenticated requests are denied
+//     everywhere by the explicit `request.auth != null` guards and the
+//     catch-all default-deny match at the bottom.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── users/{uid} ──────────────────────────────────────────────────────
+    // A user may read and write ONLY their own profile document.
+    // Write-all is intentional: client-side gamification (#020/#021) updates
+    // totals/streaks/badges directly; a server-side trigger is optional in
+    // spec §3.7 (see issue #008 implementation notes).
+    match /users/{uid} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == uid;
+
+      // ── users/{uid}/heatmapPoints/{pointId} ────────────────────────────
+      // Client bootstrap (#024) writes aggregated daily distance points
+      // directly. The Cloud Function backfill trigger (#018) writes through
+      // the Admin SDK, which bypasses these rules entirely.
+      match /heatmapPoints/{pointId} {
+        allow read, write: if request.auth != null
+                           && request.auth.uid == uid;
+      }
+    }
+
+    // ── activities/{activityId} ─────────────────────────────────────────
+    // Activities are create-only (spec §3.5): once recorded, a run/walk is
+    // immutable history. The SINGLE permitted mutation is writing the
+    // `aiSummary` field — the AI recap produced by issue #019 (client-side
+    // or via callable flow); no other field may change and `userId` may
+    // never be reassigned.
+    match /activities/{activityId} {
+      // A user may only create an activity attributed to themselves — this
+      // is what stops forging another user's activity.
+      allow create: if request.auth != null
+                    && request.resource.data.userId == request.auth.uid;
+
+      // Read (get + list): owner only. Cross-user reads are rejected.
+      allow read: if request.auth != null
+                  && resource.data.userId == request.auth.uid;
+
+      // Update: owner only, `userId` unchanged, and the affected keys must
+      // be exactly {aiSummary} (issue #019's AI recap write). Everything
+      // else is create-only (spec §3.5).
+      allow update: if request.auth != null
+                    && resource.data.userId == request.auth.uid
+                    && request.resource.data.userId == resource.data.userId
+                    && request.resource.data.diff(resource.data)
+                         .affectedKeys()
+                         .hasOnly(['aiSummary']);
+
+      // Delete: never. History is not removable through the client.
+      allow delete: if false;
+    }
+
+    // ── default deny ────────────────────────────────────────────────────
+    // Catch-all: every other document is unreadable and unwritable.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,11 +1,15 @@
 {
   "expo": {
-    "name": "runtrack-scaffold",
-    "slug": "runtrack-scaffold",
+    "name": "RunTrack",
+    "slug": "runtrack",
+    "scheme": "runtrack",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "experiments": {
+      "typedRoutes": true
+    },
     "ios": {
       "supportsTablet": true
     },
@@ -20,6 +24,40 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "firebase": {
+        "apiKey": "PASTE_FIREBASE_API_KEY",
+        "authDomain": "PASTE_PROJECT_ID.firebaseapp.com",
+        "projectId": "PASTE_PROJECT_ID",
+        "storageBucket": "PASTE_PROJECT_ID.appspot.com",
+        "messagingSenderId": "PASTE_SENDER_ID",
+        "appId": "PASTE_APP_ID"
+      }
+    },
+    "plugins": [
+      "expo-sqlite",
+      "expo-status-bar",
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "RunTrack uses precise location to record your route while the app is open.",
+          "locationAlwaysAndWhenInUsePermission": false,
+          "locationAlwaysPermission": false,
+          "isIosBackgroundLocationEnabled": false,
+          "isAndroidBackgroundLocationEnabled": false,
+          "isAndroidForegroundServiceEnabled": false
+        }
+      ],
+      [
+        "react-native-maps",
+        {
+          "androidGoogleMapsApiKey": "PASTE_GOOGLE_MAPS_API_KEY",
+          "iosGoogleMapsApiKey": "PASTE_GOOGLE_MAPS_API_KEY"
+        }
+      ],
+      "expo-font"
+    ]
   }
 }
