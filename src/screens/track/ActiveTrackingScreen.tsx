@@ -129,6 +129,7 @@ export default function ActiveTrackingScreen() {
             {status === 'paused' ? <Text style={styles.paused}>PAUSED</Text> : null}
             <Text style={styles.elapsed}>{formatDuration(durationSec)}</Text>
             <Text style={styles.hint}>Active time</Text>
+            <Text style={styles.hint}>Voice demo at 15 seconds of active time. Enable the speaker above to hear it.</Text>
             <View style={styles.stats}>
               <View style={styles.grow}>
                 <Text style={styles.value}>{formatDistance(distanceKm)}</Text>

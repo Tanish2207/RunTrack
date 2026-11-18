@@ -26,6 +26,8 @@ export interface TrackingState {
   pauseStartedAt: number | null;
   /** Last whole-km mark the voice coach announced (#023). */
   lastAnnouncedKm: number;
+  /** One-time, time-based voice demo; never changes recorded GPS stats. */
+  voiceDemoPlayed: boolean;
   /** Set on stop(), consumed (then reset()) by the Summary screen (#014). */
   pendingSummary: SessionSnapshot | null;
   start: (type: ActivityType) => void;
@@ -35,6 +37,7 @@ export interface TrackingState {
   stop: (weightKg: number) => SessionSnapshot | null;
   reset: () => void;
   setLastAnnouncedKm: (km: number) => void;
+  markVoiceDemoPlayed: () => void;
 }
 
 export const useTrackingStore = create<TrackingState>()((set, get) => ({
@@ -45,6 +48,7 @@ export const useTrackingStore = create<TrackingState>()((set, get) => ({
   totalPausedMs: 0,
   pauseStartedAt: null,
   lastAnnouncedKm: 0,
+  voiceDemoPlayed: false,
   pendingSummary: null,
 
   start: (type) => {
@@ -58,6 +62,7 @@ export const useTrackingStore = create<TrackingState>()((set, get) => ({
       totalPausedMs: 0,
       pauseStartedAt: null,
       lastAnnouncedKm: 0,
+      voiceDemoPlayed: false,
       pendingSummary: null,
     });
   },
@@ -121,6 +126,7 @@ export const useTrackingStore = create<TrackingState>()((set, get) => ({
       totalPausedMs: 0,
       pauseStartedAt: null,
       lastAnnouncedKm: 0,
+      voiceDemoPlayed: false,
       pendingSummary: snapshot,
     });
     return snapshot;
@@ -135,8 +141,10 @@ export const useTrackingStore = create<TrackingState>()((set, get) => ({
       totalPausedMs: 0,
       pauseStartedAt: null,
       lastAnnouncedKm: 0,
+      voiceDemoPlayed: false,
       pendingSummary: null,
     }),
 
   setLastAnnouncedKm: (km) => set({ lastAnnouncedKm: km }),
+  markVoiceDemoPlayed: () => set({ voiceDemoPlayed: true }),
 }));

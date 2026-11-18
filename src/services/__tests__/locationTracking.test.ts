@@ -27,6 +27,8 @@ const mocks = vi.hoisted(() => ({
   startLocationUpdatesAsync: vi.fn<typeof import('expo-location').startLocationUpdatesAsync>(),
   activateKeepAwakeAsync: vi.fn<(tag?: string) => Promise<void>>(),
   deactivateKeepAwake: vi.fn<(tag?: string) => Promise<void>>(),
+  startVoiceDemo: vi.fn<(isForeground: () => boolean) => () => void>(),
+  disposeVoiceDemo: vi.fn<() => void>(),
   appState: {
     currentState: 'active' as AppStateStatus | null,
     addEventListener: vi.fn<(
@@ -56,6 +58,7 @@ vi.mock('expo-keep-awake', () => ({
 }));
 vi.mock('react-native', () => ({ AppState: mocks.appState }));
 vi.mock('../permissions', () => ({ ensureForegroundLocation: mocks.ensureForegroundLocation }));
+vi.mock('../voiceDemo', () => ({ startVoiceDemo: mocks.startVoiceDemo }));
 vi.mock('react', async (importOriginal) => ({
   ...await importOriginal<typeof import('react')>(),
   useEffect: mocks.useEffect,
@@ -199,6 +202,7 @@ beforeEach(() => {
   mocks.hasServicesEnabledAsync.mockResolvedValue(true);
   mocks.activateKeepAwakeAsync.mockResolvedValue(undefined);
   mocks.deactivateKeepAwake.mockResolvedValue(undefined);
+  mocks.startVoiceDemo.mockReturnValue(mocks.disposeVoiceDemo);
   mocks.watchPositionAsync.mockImplementation(async (_options, callback, errorHandler) => (
     recordWatch(callback, errorHandler).subscription
   ));
@@ -372,6 +376,40 @@ describe('GPS startup and access guards', () => {
     mocks.ensureForegroundLocation.mockRejectedValueOnce(failure);
     await expect(startTracking('run')).rejects.toBe(failure);
     expect(useTrackingStore.getState().status).toBe('idle');
+  });
+});
+
+describe('voice demo engine wiring', () => {
+  it('attaches once after successful Start, survives pause/resume, and disposes on Stop', async () => {
+    await startTracking('run');
+    expect(mocks.startVoiceDemo).toHaveBeenCalledOnce();
+    const isForeground = mocks.startVoiceDemo.mock.calls[0]?.[0];
+    expect(isForeground?.()).toBe(true);
+    mocks.appState.currentState = 'background';
+    expect(isForeground?.()).toBe(false);
+    mocks.appState.currentState = 'active';
+    pauseTracking();
+    await resumeTracking();
+    expect(mocks.startVoiceDemo).toHaveBeenCalledOnce();
+    stopTracking();
+    expect(mocks.disposeVoiceDemo).toHaveBeenCalledOnce();
+    disposeTracking();
+    expect(mocks.disposeVoiceDemo).toHaveBeenCalledOnce();
+  });
+
+  it('does not attach speech when GPS startup fails', async () => {
+    mocks.watchPositionAsync.mockRejectedValueOnce(new Error('GPS failed'));
+    await expect(startTracking('run')).rejects.toMatchObject({ code: 'location-unavailable' });
+    expect(mocks.startVoiceDemo).not.toHaveBeenCalled();
+  });
+
+  it('reattaches the demo after engine disposal and Resume', async () => {
+    await startTracking('run');
+    pauseTracking();
+    disposeTracking();
+    expect(mocks.disposeVoiceDemo).toHaveBeenCalledOnce();
+    await resumeTracking();
+    expect(mocks.startVoiceDemo).toHaveBeenCalledTimes(2);
   });
 });
 

@@ -11,6 +11,7 @@ import { createElapsedClock } from '../utils/elapsedClock';
 import { DEFAULT_WEIGHT_KG } from '../utils/stats';
 import { computeElapsedMs } from '../utils/tracking';
 import { ensureForegroundLocation } from './permissions';
+import { startVoiceDemo } from './voiceDemo';
 
 export const WATCH_OPTIONS: Location.LocationOptions = {
   accuracy: Location.Accuracy.Highest,
@@ -39,6 +40,11 @@ let starting: Promise<void> | null = null;
 let resuming: Promise<void> | null = null;
 let wakeTag: string | null = null;
 let segmentStartedAt = 0;
+let disposeVoiceDemo: (() => void) | null = null;
+
+function ensureVoiceDemo(): void {
+  if (!disposeVoiceDemo) disposeVoiceDemo = startVoiceDemo(() => !AppState.currentState || AppState.currentState === 'active');
+}
 
 function releaseWakeLock(tag: string | null): void {
   if (!tag) return;
@@ -61,6 +67,8 @@ function removeWatch(): void {
 /** Resource cleanup only: caller decides whether to keep a summary or reset. */
 export function disposeTracking(): void {
   generation++;
+  disposeVoiceDemo?.();
+  disposeVoiceDemo = null;
   removeWatch();
   const listener = appStateSubscription;
   appStateSubscription = null;
@@ -194,6 +202,7 @@ export function startTracking(type: ActivityType): Promise<void> {
       segmentStartedAt = useTrackingStore.getState().startedAt ?? Date.now();
       ensureAppStateListener(token);
       await installWatch(token);
+      ensureVoiceDemo();
     } catch (error) {
       assertGeneration(token);
       if (token === generation) {
@@ -245,6 +254,7 @@ export function resumeTracking(): Promise<void> {
       useTrackingStore.getState().resume();
       ensureAppStateListener(token);
       if (!subscription) await installWatch(token);
+      ensureVoiceDemo();
     } catch (error) {
       assertGeneration(token);
       pauseTracking();

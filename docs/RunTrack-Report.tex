@@ -1,0 +1,687 @@
+% ============================================================
+%  RunTrack — Comprehensive Project Report
+%  Compile with: pdflatex RunTrack-Report.tex  (run twice for TOC/refs)
+% ============================================================
+\documentclass[11pt,a4paper]{report}
+
+% ---------- Packages ----------
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!60!black,
+    urlcolor=blue!60!black,
+    citecolor=blue!60!black,
+    pdftitle={RunTrack - Project Report},
+    pdfauthor={Your Name}
+}
+
+% ---------- Header / Footer ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small RunTrack --- Project Report}
+\fancyhead[R]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ---------- Code listing style ----------
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codekey}{RGB}{0,0,190}
+\definecolor{codestr}{RGB}{163,21,21}
+\lstdefinestyle{ts}{
+    language=Java,               % closest built-in; keywords overridden below
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{codebg},
+    keywordstyle=\color{codekey}\bfseries,
+    stringstyle=\color{codestr},
+    commentstyle=\color{gray}\itshape,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    breaklines=true,
+    frame=single,
+    framerule=0.3pt,
+    showstringspaces=false,
+    tabsize=2,
+    morekeywords={const,let,var,function,interface,type,export,import,from,async,await,class,extends,implements,return,new,if,else,for,while,switch,case,break,try,catch,finally,throw,typeof,null,undefined,true,false,string,number,boolean,void,never,unknown,any,readonly,public,private,static,get,set,as,in,of}
+}
+\lstdefinestyle{sql}{
+    language=SQL,
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{codebg},
+    keywordstyle=\color{codekey}\bfseries,
+    stringstyle=\color{codestr},
+    commentstyle=\color{gray}\itshape,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    breaklines=true,
+    frame=single,
+    framerule=0.3pt,
+    showstringspaces=false,
+    tabsize=2
+}
+\lstdefinestyle{json}{
+    language={},
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{codebg},
+    keywordstyle=\color{codekey}\bfseries,
+    stringstyle=\color{codestr},
+    commentstyle=\color{gray}\itshape,
+    breaklines=true,
+    frame=single,
+    framerule=0.3pt,
+    showstringspaces=false,
+    morestring=[b]",
+    morecomment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    morekeywords={true,false,null}
+}
+\lstdefinestyle{tex}{
+    language={[LaTeX]TeX},
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{codebg},
+    keywordstyle=\color{codekey}\bfseries,
+    commentstyle=\color{gray}\itshape,
+    breaklines=true,
+    frame=single,
+    framerule=0.3pt,
+    showstringspaces=false
+}
+
+% ---------- Screenshot placeholder macro ----------
+% Usage: \screenshot{Caption text}{Description of what the screenshot shows}
+% To insert a real screenshot, replace the \screenshot{...}{...} call with:
+%   \begin{figure}[htbp]
+%     \centering
+%     \includegraphics[width=0.75\textwidth]{figures/your-image.png}
+%     \caption{Caption text}
+%   \end{figure}
+\newcommand{\screenshot}[2]{%
+\begin{figure}[htbp]
+    \centering
+    \fbox{%
+        \parbox[c][7cm][c]{0.85\textwidth}{%
+            \centering
+            {\large\textbf{[ Screenshot Placeholder ]}}\\[8pt]
+            \textit{#2}\\[8pt]
+            \small Replace this box with: \texttt{\textbackslash includegraphics\{figures/...\}}
+        }%
+    }
+    \caption{#1}
+\end{figure}}
+
+\begin{document}
+
+% ============================================================
+% TITLE PAGE
+% ============================================================
+\begin{titlepage}
+    \centering
+    \vspace*{1.5cm}
+    {\Large \textbf{[Institution Name]}\\[4pt]
+    \large Department of Computer Science / Computer Applications\par}
+    \vfill
+    {\Huge \textbf{RunTrack}}\\[10pt]
+    {\Large An Offline-First GPS Activity Tracking Application\\[4pt]
+    \large Built with Expo, React Native and Firebase\par}
+    \vspace{1.5cm}
+    % Optional app icon: compiles even if no image files are uploaded.
+    \IfFileExists{../assets/icon.png}%
+      {\includegraphics[width=0.25\textwidth]{../assets/icon.png}}%
+      {\IfFileExists{assets/icon.png}%
+          {\includegraphics[width=0.25\textwidth]{assets/icon.png}}%
+          {\fbox{\parbox[c][3cm][c]{3cm}{\centering\small App icon\\(assets/icon.png)}}}}\\[1cm]
+    \vfill
+    \begin{tabular}{rl}
+        \textbf{Project Title}   & RunTrack --- GPS Activity Tracker \\
+        \textbf{Course}          & Cross Platform App Development (CPAD) \\
+        \textbf{Submitted by}    & [Your Name] --- [Roll Number] \\
+        \textbf{Guided by}       & [Guide Name], [Designation] \\
+        \textbf{Academic Year}   & 2025--2026 \\
+    \end{tabular}
+    \vfill
+    {\large \textbf{November 2026}\par}
+\end{titlepage}
+
+% ============================================================
+% FRONT MATTER
+% ============================================================
+\pagenumbering{roman}
+
+\chapter*{Declaration}
+\addcontentsline{toc}{chapter}{Declaration}
+I hereby declare that the project entitled \textbf{``RunTrack --- An Offline-First GPS Activity Tracking Application''} is a record of original work carried out by me under the guidance of [Guide Name], in partial fulfillment of the requirements of the course \textit{Cross Platform App Development}. The design, implementation, testing and documentation of this project are my own work, except where due acknowledgement has been made.
+\begin{flushright}
+[Your Name] \\ {[Roll Number]}
+\end{flushright}
+
+\chapter*{Certificate}
+\addcontentsline{toc}{chapter}{Certificate}
+This is to certify that the project report entitled \textbf{``RunTrack --- An Offline-First GPS Activity Tracking Application''} is a bonafide record of the work done by [Your Name] under my supervision, in partial fulfillment of the award of [Degree / Diploma].
+
+\begin{flushright}
+[Guide Name] \\ {[Designation, Department]}
+\end{flushright}
+
+\chapter*{Acknowledgement}
+\addcontentsline{toc}{chapter}{Acknowledgement}
+I express my sincere gratitude to my project guide [Guide Name] and the faculty of the Department of [Department] for their continuous support and feedback throughout the development of this project. I also thank the open-source communities behind Expo, React Native, Firebase and the many libraries used in this project, whose documentation made this work possible.
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+% ============================================================
+% MAIN MATTER
+% ============================================================
+\cleardoublepage
+\pagenumbering{arabic}
+
+% ------------------------------------------------------------
+\chapter{Introduction}
+% ------------------------------------------------------------
+
+\section{Overview}
+\textbf{RunTrack} is a Strava-style fitness activity tracker for Android, iOS and Web, built as a cross-platform mobile application using the \textit{Expo} framework (\textit{React Native}) with a \textit{Firebase} cloud backend. The application tracks outdoor activities --- running, cycling and walking --- using the device's GPS receiver, computes performance statistics such as distance, duration, pace and estimated calorie burn, and stores each activity in a cloud database.
+
+A distinguishing characteristic of RunTrack is its \textbf{offline-first architecture}: every recorded activity is always written to a local \textit{SQLite} queue first and subsequently synchronised with \textit{Cloud Firestore} when connectivity permits. This guarantees that no workout is ever lost because of a network outage --- a real-world constraint for runners who frequently train in areas with poor coverage.
+
+\section{Problem Statement}
+Fitness enthusiasts who run, cycle or walk outdoors need a reliable record of their activities: how far they went, how long it took, at what pace, and along which route. Existing solutions typically assume continuous internet connectivity and tightly couple data capture to cloud availability. The problem addressed by RunTrack is therefore twofold:
+\begin{enumerate}[nosep]
+    \item \textbf{Accurate activity capture} --- record GPS position samples in the foreground, convert them into a distance/duration/pace summary, and display the route live on a map.
+    \item \textbf{Resilient persistence} --- ensure every recorded activity survives application restarts, process death and network loss, and eventually reaches a cloud backend without user intervention.
+\end{enumerate}
+
+\section{Objectives}
+\begin{itemize}[nosep]
+    \item To build a cross-platform (Android / iOS / Web) mobile application from a single TypeScript codebase using Expo and Expo Router.
+    \item To implement foreground GPS tracking with pause/resume support and live map visualisation.
+    \item To compute activity statistics (distance via the Haversine formula, duration excluding pauses, average pace, calorie estimate) entirely on-device.
+    \item To design an offline-first persistence layer: a local SQLite write-ahead queue synchronised to Cloud Firestore.
+    \item To implement email/password authentication with per-user data isolation enforced by server-side security rules.
+    \item To keep the codebase testable: pure logic isolated in utility modules and covered by an automated unit-test suite ($\approx$~575 tests).
+\end{itemize}
+
+\section{Scope}
+\subsection{In Scope}
+\begin{itemize}[nosep]
+    \item Email/password authentication (login, signup, persistent session, logout).
+    \item Foreground GPS tracking of \textit{Run}, \textit{Cycle} and \textit{Walk} activities.
+    \item Live map with route polyline, live HUD (distance, duration, current pace), pause/resume, and a confirmation-gated finish flow.
+    \item Post-activity review screen with save/discard.
+    \item History list (50 most recent activities) and per-activity detail with a fitted route map.
+    \item Offline queueing and best-effort background synchronisation.
+    \item Voice feedback during recording (text-to-speech).
+\end{itemize}
+
+\subsection{Out of Scope}
+Elevation gain, social features (followers, feed, kudos), wearable/HealthKit integration, and background (foreground-service) tracking are explicitly out of scope. Background location is intentionally disabled on both platforms (see Section~\ref{sec:foreground-only}). A km/mi unit toggle is a stretch goal.
+
+\section{Target Users}
+The application targets individual runners, cyclists and walkers who want a personal training log. It is a single-user, personal-tracking application --- there are no social features by design.
+
+% ------------------------------------------------------------
+\chapter{Technology Survey}
+% ------------------------------------------------------------
+
+\section{Technology Stack}
+\begin{table}[htbp]
+\centering
+\caption{Technology stack and toolchain}
+\begin{tabular}{p{4.2cm} p{3.0cm} p{6.4cm}}
+\toprule
+\textbf{Technology} & \textbf{Version} & \textbf{Role in the project} \\
+\midrule
+Expo SDK & $\sim$58.0.25 & Framework, build tooling, config plugins, typed routes \\
+React Native & 0.88.1 & Native UI runtime (Hermes engine) \\
+TypeScript & $\sim$6.0.3 (strict) & End-to-end type safety \\
+Expo Router & $\sim$58.0.31 & File-based navigation (Stack + Tabs) \\
+expo-location & $\sim$58.0.22 & GPS watch (position stream) \\
+expo-sqlite & $\sim$58.0.17 & Local offline queue (WAL journal) \\
+Firebase JS SDK & 13.3.0 & Auth + Cloud Firestore \\
+Zustand & 5.1.0 & Lightweight state management \\
+react-native-maps & 1.29.11 & MapView and Polyline rendering \\
+@react-native-community/netinfo & 12.0.1 & Connectivity gate for sync \\
+expo-speech & $\sim$58.0.4 & Voice coaching (TTS) \\
+Async Storage & 2.2.0 & Persisted settings; auth session storage \\
+react-native-web & 0.21.4 & Web preview target \\
+Vitest & 5.1.0 & Unit-test runner (575 tests) \\
+ESLint + eslint-config-expo & flat config & Linting (\texttt{no-explicit-any} enforced) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Framework Choices and Rationale}
+\begin{description}[style=nextline]
+    \item[Expo over bare React Native.] Expo provides a managed workflow: config plugins replace manual native-file editing, Continuous Native Generation (CNG) means no \texttt{ios/} or \texttt{android/} directories are committed, and the Expo CLI exposes lint/typecheck/export pipelines. SDK~58 introduces \texttt{Stack.Protected} auth gating and typed routes.
+    \item[Expo Router over React Navigation directly.] File-based routing keeps route definitions co-located with screens under \texttt{src/app/}. Nested layouts express the app's structure (auth group vs.\ tab group) declaratively. Expo Router supersedes direct React Navigation usage in this project, although it is built on React Navigation primitives.
+    \item[Firebase (Auth + Firestore) over a custom backend.] Firestore offers a real-time document database with a generous free tier, offline caching, and declarative security rules --- eliminating the need to write a server for a lab-scale project. The Firebase \textit{web} (JS) SDK is used, so no \texttt{google-services.json} is required.
+    \item[SQLite over AsyncStorage for the queue.] Activity routes are large, structured JSON payloads. SQLite provides transactional inserts, indexed queries (partial index on unsynced rows), and a WAL journal, which AsyncStorage cannot.
+    \item[Zustand over Redux/Context.] Activity tracking produces high-frequency state updates (every GPS fix). Zustand's store-per-concern model with selector-level subscription avoids both re-render storms and Redux boilerplate.
+    \item[Vitest over Jest.] Faster, modern test runner with compatible APIs; used for pure-logic and store tests with mocked native modules.
+\end{description}
+
+% ------------------------------------------------------------
+\chapter{System Analysis}
+% ------------------------------------------------------------
+
+\section{Existing Systems and Motivation}
+Commercial trackers such as Strava, Nike Run Club and Google Fit fully satisfy the tracking use case but are closed-source, ad-supported and depend on continuous connectivity for a smooth experience. For an academic study of cross-platform architecture, building a focused open implementation --- with an explicit offline-first guarantee --- is more instructive and allows full control over the data model.
+
+\section{Functional Requirements}
+\begin{longtable}{p{1.2cm} p{5.6cm} p{8.2cm}}
+\caption{Functional requirements}\label{tab:frs}\\
+\toprule
+\textbf{ID} & \textbf{Requirement} & \textbf{Description} \\
+\midrule
+\endhead
+FR-1 & Authentication & Users sign up / log in with email and password. A profile document is created per user. Sessions persist across restarts. \\
+FR-2 & Activity types & User selects Run, Cycle or Walk before starting. \\
+FR-3 & GPS recording & While recording, the app samples location at the highest accuracy ($\le$ 2 s interval, $\ge$ 5 m distance change) and renders the live route. \\
+FR-4 & Pause / Resume & Pausing splits the route into segments; distance is summed per segment so paused movement is never counted. \\
+FR-5 & Live HUD & Elapsed time, distance and current pace are displayed during recording. \\
+FR-6 & Summary \& save & On finish, a summary (distance, duration, pace, calories, route map) is shown; the user saves or discards. \\
+FR-7 & Statistics & Distance via Haversine summation; duration excludes pauses; pace in mm:ss/km; calories $= d \times w \times 1.036$ with weight defaulting to 70 kg. \\
+FR-8 & Offline queue & Every save writes to local SQLite first; unsynced rows are pushed to Firestore when connectivity allows. \\
+FR-9 & History & The 50 most recent activities are listed newest-first with live updates; each opens a detail screen with the route map. \\
+FR-10 & Voice feedback & A spoken announcement plays during recording when enabled; the mute toggle persists locally. \\
+FR-11 & Data isolation & Users can read and write only their own documents, enforced by Firestore security rules. \\
+\bottomrule
+\end{longtable}
+
+\section{Non-Functional Requirements}
+\begin{itemize}[nosep]
+    \item \textbf{Reliability.} A network failure must never lose a recorded activity nor reject a save; failed pushes remain queued with a retry counter.
+    \item \textbf{Correctness.} GPS fixes are filtered (accuracy, plausibility, monotonic time) before contributing to distance; duplicate saves of the same session are impossible.
+    \item \textbf{Performance.} High-frequency state updates must not re-render the whole tree; heavy views (map) are memoised; the history list is virtualised (\texttt{FlatList}).
+    \item \textbf{Security.} Server-enforced, per-user authorisation; the client never trusts the UI for access control.
+    \item \textbf{Maintainability.} Strict TypeScript, a component/UI kit with design tokens, pure utility modules, and a documented decision log.
+    \item \textbf{Testability.} $\approx$~575 automated unit tests across logic, stores, services, repositories and screens.
+\end{itemize}
+
+\section{Hardware and Software Requirements}
+\begin{itemize}[nosep]
+    \item \textbf{Development:} Node.js (npm), Expo CLI, Android Studio / Xcode optional (Expo Go suffices), a Firebase project, a Google Maps API key.
+    \item \textbf{Runtime (device):} Android 8+ / iOS 13+ with GPS; internet for synchronisation only.
+    \item \textbf{Backend:} Firebase project with Email/Password auth enabled, Cloud Firestore in production mode, deployed rules and one composite index.
+\end{itemize}
+
+% ------------------------------------------------------------
+\chapter{System Design}
+% ------------------------------------------------------------
+
+\section{High-Level Architecture}
+RunTrack follows a layered, unidirectional-data-flow architecture:
+
+\begin{center}
+\begin{tabular}{c}
+\toprule
+\textbf{Screens / Routes} (\texttt{src/app}, \texttt{src/screens}) --- navigation and presentation \\
+\midrule
+\textbf{State} (\texttt{src/stores}) --- five Zustand stores: auth, tracking, sync, settings, UI \\
+\midrule
+\textbf{Services} (\texttt{src/services}) --- tracking engine, SQLite queue, save flow, network, voice \\
+\midrule
+\textbf{API boundary} (\texttt{src/api}) --- Firebase Auth + Firestore repositories and types \\
+\midrule
+\textbf{Platform} --- Firebase cloud, SQLite (on-device), Google Maps, OS location provider \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Screens never call Firebase or SQLite directly; they dispatch store actions and call service functions. Services own native resources (the location watch, the SQLite connection); the API layer is the only module that knows about Firestore.
+
+\screenshot{High-level architecture of RunTrack}{Architecture diagram: screens $\rightarrow$ Zustand stores $\rightarrow$ services $\rightarrow$ API layer $\rightarrow$ Firebase/SQLite. Replace with your own diagram image.}
+
+\section{Module Design}
+\begin{table}[htbp]
+\centering
+\caption{Principal modules and their responsibilities}
+\begin{tabular}{p{4.6cm} p{10.4cm}}
+\toprule
+\textbf{Module (path)} & \textbf{Responsibility} \\
+\midrule
+\texttt{services/locationTracking.ts} & Singleton GPS engine (314 lines). Owns the \texttt{watchPositionAsync} subscription, an \texttt{AppState} listener and keep-awake. Exposes \texttt{start/pause/resume/stop}, an external elapsed clock, and a root lifecycle hook. Generation tokens reject stale callbacks. \\
+\texttt{utils/locationFix.ts} & GPS fix filter: rejects accuracy $>$ 20 m, implied ``teleport'' speed $>$ 28 m/s, fixes older than 15 s or more than 5 s in the future, and non-monotonic timestamps. \\
+\texttt{utils/geo.ts} & Haversine great-circle distance; per-segment summation. \\
+\texttt{utils/stats.ts} & Duration (pauses excluded), average pace, calorie model, session snapshot builder. \\
+\texttt{services/db.ts} & SQLite queue: schema migration (v1 via \texttt{user\_version}), insert/mark-synced/mark-failed, unsynced fetch, 30-day purge. \\
+\texttt{services/saveFlow.ts} & Offline-first save orchestration (Section~\ref{sec:saveflow}); duplicate-save protection via a \texttt{WeakMap} keyed by session snapshot. \\
+\texttt{services/network.ts} & NetInfo gate: \texttt{isInternetLikelyReachable()} (unknown $\Rightarrow$ attempt). \\
+\texttt{services/voiceDemo.ts} & TTS announcement during recording; \texttt{Speech.stop()} before \texttt{speak()}; revision tokens cancel stale calls. \\
+\texttt{api/auth.ts} & Sign-up / sign-in / logout; \texttt{bootstrapAuth()} with an 8-second safety timer so the auth gate can never hang. \\
+\texttt{api/activities.ts} & \texttt{activities} repository: validation, owner query (limit 50, newest first), and an update path restricted to \texttt{aiSummary} only. \\
+\texttt{api/users.ts} & \texttt{users} repository: idempotent transactional profile creation; field-whitelisted patches. \\
+\texttt{stores/*.ts} & \texttt{authStore}, \texttt{trackingStore} (state machine), \texttt{syncStore}, \texttt{settingsStore} (persisted), \texttt{uiStore} (toasts). \\
+\texttt{components/RouteMap.tsx} & MapView with memoised per-segment polylines, follow/fit camera modes; \texttt{.web.tsx} fallback for web. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Navigation Design}
+Expo Router file-based routes (\texttt{src/app/}) map one-to-one to screens:
+
+\begin{lstlisting}[style=json, caption={Route tree (src/app/)}, label={lst:routes}]
+src/app/_layout.tsx            // Root stack: auth gate, ThemeProvider,
+                               //   Toast host, lifecycle hooks
+src/app/index.tsx              // Redirect -> (tabs)/track or (auth)/login
+src/app/(auth)/login.tsx       // LoginScreen
+src/app/(auth)/signup.tsx      // SignupScreen
+src/app/(tabs)/_layout.tsx     // Bottom tabs: track, history, heatmap, profile
+src/app/(tabs)/track/index.tsx // TrackScreen (map + Start)
+src/app/(tabs)/track/active.tsx    // ActiveTrackingScreen (live HUD)
+src/app/(tabs)/track/summary.tsx   // ActivitySummaryScreen (review/save)
+src/app/(tabs)/history/index.tsx   // HistoryScreen (FlatList)
+src/app/(tabs)/history/[activityId].tsx // ActivityDetailScreen
+\end{lstlisting}
+
+Authentication is enforced with \texttt{Stack.Protected} guards (SDK~58): the root layout renders \texttt{(tabs)} when a user session exists and protects the authenticated group, redirecting unauthenticated users to \texttt{(auth)/login}. Typed routes (experiments.\allowbreak \texttt{typedRoutes: true}) make every \texttt{router.push} call compile-time checked.
+
+\section{Data Design}
+\subsection{Local Database --- SQLite}
+Database \texttt{runtrack.db} with \texttt{PRAGMA journal\_mode = WAL}; migrations versioned by \texttt{PRAGMA user\_version}.
+
+\begin{lstlisting}[style=sql, caption={Local queue schema (\texttt{pending\_activities}, migration v1)}, label={lst:schema}]
+CREATE TABLE IF NOT EXISTS pending_activities (
+  localId          TEXT PRIMARY KEY NOT NULL,
+  firestoreId      TEXT,              -- set after a successful push
+  userId           TEXT NOT NULL,
+  type             TEXT NOT NULL,     -- 'run' | 'cycle' | 'walk'
+  startTime        INTEGER NOT NULL,
+  endTime          INTEGER NOT NULL,
+  distanceKm       REAL NOT NULL,
+  durationSec      INTEGER NOT NULL,
+  avgPaceSecPerKm  REAL NOT NULL,
+  caloriesEstimate REAL NOT NULL,
+  route            TEXT NOT NULL,     -- JSON: RoutePoint[]
+  aiSummary        TEXT,
+  synced           INTEGER NOT NULL DEFAULT 0,
+  retryCount       INTEGER NOT NULL DEFAULT 0,
+  lastAttempt      INTEGER NOT NULL DEFAULT 0,
+  createdAt        INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS pending_activities_unsynced_idx
+  ON pending_activities (createdAt) WHERE synced = 0;
+CREATE INDEX IF NOT EXISTS pending_activities_created_idx
+  ON pending_activities (createdAt);
+\end{lstlisting}
+
+\subsection{Cloud Database --- Firestore Collections}
+\begin{table}[htbp]
+\centering
+\caption{Firestore data model}
+\begin{tabular}{p{4.6cm} p{10.4cm}}
+\toprule
+\textbf{Path} & \textbf{Fields} \\
+\midrule
+\texttt{users/\{uid\}} & \texttt{uid, name, email, weightKg (default 70), createdAt, totalDistanceKm, totalActivities, currentStreak, longestStreak, lastActivityDate, badges[]} \\
+\texttt{activities/\{activityId\}} & \texttt{userId, type, startTime, endTime, durationSec, distanceKm, avgPaceSecPerKm, caloriesEstimate, route[] \{lat, lng, timestamp, speed?\}, aiSummary?, createdAt} \\
+\texttt{users/\{uid\}/heatmapPoints/\{id\}} & Pre-aggregated heatmap points (reserved for future features; rules already in place) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A route is stored as an array of points inside the activity document. A 3-hour run at a 2-second sampling interval produces $\approx$ 5{,}400 points, which comfortably fits Firestore's 1~MiB document limit, so no chunking is required.
+
+\subsection{Composite Index}
+One composite index backs the history query: \texttt{activities (userId ASC, startTime DESC)}.
+
+\section{Key Design Decisions}
+\label{sec:foreground-only}
+\begin{description}[style=nextline]
+    \item[Foreground-only tracking.] Background location is disabled in \texttt{app.json} on both platforms (\texttt{isAndroidBackgroundLocationEnabled: false}, \texttt{isIosBackgroundLocationEnabled: false}). Backgrounding the app auto-pauses the session with a toast; returning never auto-resumes. This avoids platform-specific foreground-service permissions while remaining fully functional for typical workouts.
+    \item[Local-first writes.] The SQLite insert is always the first write; Firestore is best-effort. Consequently a save call can never reject because of the network.
+    \item[Duplicate-save protection.] The save flow keeps a \texttt{WeakMap<SessionSnapshot, Map<userId, Promise>>} so double-tapping ``Save'' cannot create duplicate documents.
+    \item[Repository-only data access.] Screens and stores never import Firebase directly; all reads/writes go through \texttt{src/api}, normalising and whitelisting every field.
+\end{description}
+
+\section{Offline-First Save Flow}
+\label{sec:saveflow}
+\begin{enumerate}[nosep]
+    \item \texttt{insertPending()} writes the activity to SQLite and increments \texttt{syncStore.pendingCount}.
+    \item If \texttt{isInternetLikelyReachable()} (a \texttt{null} NetInfo state is treated as reachable), the row is pushed to Firestore; on success the row is marked synced with its \texttt{firestoreId}.
+    \item On failure the row is marked failed (\texttt{retryCount++}); it remains queued for a later retry.
+    \item If SQLite is unavailable (web without the WASM/COOP-COEP setup), the flow degrades to a direct Firestore push.
+    \item At every app start, \texttt{purgeSyncedOlderThan(30)} deletes synced rows older than 30 days.
+\end{enumerate}
+
+\screenshot{Sequence diagram of the offline-first save flow}{Swim-lane diagram: Summary Screen $\rightarrow$ saveFlow $\rightarrow$ SQLite $\rightarrow$ NetInfo gate $\rightarrow$ Firestore $\rightarrow$ markSynced/markFailed.}
+
+% ------------------------------------------------------------
+\chapter{Implementation}
+% ------------------------------------------------------------
+
+\section{Project Structure}
+\begin{lstlisting}[style=json, caption={Source layout}, label={lst:structure}]
+src/
+  app/          # Expo Router routes (see Listing 2)
+  api/          # Firebase boundary: firebase, auth, activities, users, types
+  stores/       # Zustand stores (auth, tracking, sync, settings, ui)
+  services/     # locationTracking, db, saveFlow, network, permissions,
+                #   voiceDemo, activityReview, aiSummary (stub), gamification (stub)
+  screens/      # auth/, track/, history/, heatmap/, profile/
+  components/   # UI kit: Button, Card, TextField, Toast, StatTile,
+                #   ActivityRow, RouteMap (+ .web.tsx), ...
+  hooks/        # useActivityHistory, useActivityDetail, useForegroundLocation
+  utils/        # geo, stats, tracking, locationFix, elapsedClock, format, ...
+  theme/        # design tokens (Strava-orange accent #FC4C02) + makeStyles
+\end{lstlisting}
+
+\section{Configuration Management}
+Firebase credentials and Google Maps keys are secrets. The committed \texttt{app.json} contains \texttt{PASTE\_} placeholders; a git-ignored \texttt{firebase.local.json} is deep-merged over \texttt{extra.firebase} at build time by \texttt{app.config.js}. At runtime, \texttt{assertFirebaseConfigured()} throws a descriptive \texttt{FirebaseConfigurationError} if any of the six fields is empty or still carries the placeholder marker --- the app fails fast instead of misbehaving against a wrong backend.
+
+\begin{lstlisting}[style=json, caption={expo-location plugin configuration (foreground-only)}, label={lst:plugins}]
+[
+  "expo-location",
+  {
+    "locationWhenInUsePermission":
+      "RunTrack uses precise location to record your route while the app is open.",
+    "locationAlwaysAndWhenInUsePermission": false,
+    "locationAlwaysPermission": false,
+    "isIosBackgroundLocationEnabled": false,
+    "isAndroidBackgroundLocationEnabled": false,
+    "isAndroidForegroundServiceEnabled": false
+  }
+]
+\end{lstlisting}
+
+\section{GPS Tracking Engine}
+The engine is a module-level singleton. Notable mechanisms:
+\begin{itemize}[nosep]
+    \item \textbf{Stale-callback rejection.} Every session increments a \texttt{generation} token; callbacks from a previous watch compare tokens and discard themselves.
+    \item \textbf{Watch options.} \texttt{Accuracy.Highest}, \texttt{timeInterval: 2000} (Android), \texttt{distanceInterval: 5} (metres).
+    \item \textbf{Segmented routes.} Pausing closes the current segment; \texttt{segments: RoutePoint[][]} keeps pauses out of the distance integral.
+    \item \textbf{Elapsed clock.} \texttt{useElapsedMs} is an external store read with \texttt{useSyncExternalStore}, so the ticking timer re-renders only the HUD, not the map.
+    \item \textbf{Lifecycle.} \texttt{useTrackingLifecycle()} is mounted once at the root layout; \texttt{AppState} transitions auto-pause the session.
+\end{itemize}
+
+\section{Statistics Computation}
+\begin{itemize}[nosep]
+    \item \textbf{Distance} --- sum of Haversine distances between consecutive accepted fixes within each segment:
+    \begin{equation}
+    d = 2R \arcsin\!\left(\sqrt{\sin^2\!\tfrac{\Delta\varphi}{2} + \cos\varphi_1 \cos\varphi_2 \sin^2\!\tfrac{\Delta\lambda}{2}}\right), \quad R \approx 6371\,\text{km}
+    \end{equation}
+    \item \textbf{Duration} --- wall-clock time between start and end, minus accumulated pause time.
+    \item \textbf{Pace} --- seconds-per-km averaged only over meaningful movement (distances below \texttt{0.05 km} are excluded to avoid absurd instantaneous paces); rendered as mm:ss/km.
+    \item \textbf{Calories} --- $\text{kcal} = \text{distanceKm} \times \text{weightKg} \times 1.036$, with weight from the user profile (default 70 kg).
+\end{itemize}
+
+\section{Authentication}
+\begin{itemize}[nosep]
+    \item Sign-up creates the Auth account and the \texttt{users/\{uid\}} profile document inside a Firestore \texttt{runTransaction}, making profile creation idempotent.
+    \item \texttt{bootstrapAuth()} subscribes to \texttt{onAuthStateChanged} and arms an 8-second safety timer, so the navigation gate always resolves even against a misconfigured backend or no network.
+    \item Logout always clears local session state (auth, tracking, sync stores) even if the server call fails.
+    \item A \texttt{\_\_DEV\_\_}-only synthetic identity (\texttt{dev-user}) enables navigation preview without a backend.
+\end{itemize}
+
+\section{Security Rules}
+\begin{lstlisting}[style=json, caption={Extract of \texttt{firestore.rules} (rules\_version 2)}, label={lst:rules}]
+match /activities/{activityId} {
+  // Only the owner may create, and the document must be self-attributed.
+  allow create: if request.auth != null
+      && request.resource.data.userId == request.auth.uid;
+  allow read:   if request.auth != null
+      && resource.data.userId == request.auth.uid;
+  // Updates may only touch the aiSummary field.
+  allow update: if request.auth != null
+      && resource.data.userId == request.auth.uid
+      && request.resource.data.userId == resource.data.userId
+      && request.resource.data.diff(resource.data).affectedKeys()
+           .hasOnly(['aiSummary']);
+  allow delete: if false;   // history is immutable
+}
+match /users/{uid} {
+  allow read, write: if request.auth != null && request.auth.uid == uid;
+}
+// Default deny for everything else.
+match /{document=**} { allow read, write: if false; }
+\end{lstlisting}
+
+These rules make per-user isolation a \textit{server-side} guarantee: even a compromised client cannot read another user's activities, mutate ownership on update, or delete history.
+
+\section{Maps}
+\texttt{RouteMap.tsx} wraps \texttt{react-native-maps} with a Google-provider \texttt{MapView}, one memoised \texttt{Polyline} per segment (accent colour, width 5, geodesic) and two camera modes: \textit{follow} (live tracking) and \textit{fit} (\texttt{fitToCoordinates}, or a zoom-16 \texttt{setCamera} for single-point routes). On web, \texttt{RouteMap.web.tsx} renders an informational fallback because \texttt{react-native-maps} does not support web.
+
+\screenshot{Home / Track screen with map preview and activity-type selector}{The Track tab: full-screen map preview, Run/Cycle/Walk selector and the Start button.}
+
+\screenshot{Active tracking screen with live HUD}{Live route polyline on the map plus the HUD showing elapsed time, distance and current pace, with Pause/Resume and Finish controls.}
+
+\screenshot{Activity summary screen after finishing}{The review screen showing distance, duration, average pace, calories and the route map, with Save and Discard actions.}
+
+\screenshot{History list and activity detail}{Left: the History tab listing recent activities. Right: the detail screen with the fitted route map and stored statistics.}
+
+\section{Voice Feedback}
+Voice feedback uses \texttt{expo-speech}. The service only speaks when the app is foregrounded, the session is actively recording and the user setting is enabled; it always consumes the spoken milestone (so unmuting never replays old cues), calls \texttt{Speech.stop()} before every \texttt{Speech.speak()} to avoid overlap, and uses revision tokens to cancel stale native calls. The mute toggle lives in the persisted \texttt{settingsStore} (AsyncStorage key \texttt{runtrack-settings}) and is exposed as an icon on the tracking screen.
+
+% ------------------------------------------------------------
+\chapter{Testing}
+% ------------------------------------------------------------
+
+\section{Test Strategy}
+The suite (Vitest, \texttt{npm test}) deliberately mocks all native modules (expo-location, expo-sqlite, react-native-maps) and Firebase. It therefore verifies \textit{logic} --- state machines, filters, formulas, queue semantics, repository field-whitelisting, screen behaviour --- rather than on-device GPS behaviour, which is covered by a manual QA checklist (\texttt{docs/TRACKING\_QA.md}). Latest recorded automated run: \textbf{575 tests passing across 24--26 files}; \texttt{expo-doctor} reports 20/20 checks passing.
+
+\section{Coverage by Area}
+\begin{table}[htbp]
+\centering
+\caption{Automated test coverage by module}
+\begin{tabular}{p{4.6cm} p{10.4cm}}
+\toprule
+\textbf{Area} & \textbf{Test files (representative)} \\
+\midrule
+Pure utilities & \texttt{geo.test.ts} (Haversine), \texttt{stats.test.ts}, \texttt{locationFix.test.ts} (filter rules), \texttt{tracking.test.ts}, \texttt{format.test.ts}, \texttt{elapsedClock.test.ts} \\
+State machines & \texttt{trackingStore.test.ts} (idle/recording/paused transitions, pause accounting) \\
+Tracking engine & \texttt{locationTracking.test.ts} ($\approx$70 tests: lifecycle, generation tokens, auto-pause) \\
+Persistence & \texttt{db.test.ts} (queue insert/mark/fetch/purge), \texttt{saveFlow.test.ts} (offline paths, duplicate-save guard) \\
+API layer & \texttt{activities.test.ts}, \texttt{users.test.ts} (validation, whitelisting) \\
+Screens / components & \texttt{ActivitySummaryScreen}, \texttt{HistoryScreen}, \texttt{ActivityDetailScreen}, \texttt{RouteMap}, \texttt{ActivityRow}, \texttt{SyncBanner} \\
+Services & \texttt{permissions.test.ts} (37), \texttt{network.test.ts}, \texttt{voiceDemo.test.ts}, \texttt{activityReview.test.ts}, \texttt{hooks.test.ts} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Manual QA}
+Structured checklists in \texttt{docs/TRACKING\_QA.md} and \texttt{docs/HISTORY\_QA.md} cover on-device scenarios the unit suite cannot: permission prompts, GPS behaviour in motion, offline saves, backgrounding, duplicate-save protection, map camera behaviour and the web fallback. Key on-device findings recorded there: tracking is foreground-only, and a process death loses an unsaved in-progress session (documented limitation).
+
+\section{Static Analysis}
+\begin{itemize}[nosep]
+    \item \texttt{npx tsc --noEmit} --- strict TypeScript with generated typed routes.
+    \item \texttt{npx expo lint} --- flat ESLint config; \texttt{@typescript-eslint/no-explicit-any} is elevated to \texttt{error} under \texttt{src/}.
+    \item \texttt{npx expo-doctor} --- dependency and configuration diagnostics.
+\end{itemize}
+
+% ------------------------------------------------------------
+\chapter{Results and Discussion}
+% ------------------------------------------------------------
+
+\section{Current Status}
+The project is organised as 28 numbered implementation tickets (\texttt{issues/}) across six milestones (M1--M6). As of November 2026, \textbf{tickets \#001--\#016 are implemented}: project bootstrap, theming, auth, the tracking engine, GPS filtering, the summary flow, history and detail screens, and the SQLite save queue. A production web bundle was exported to \texttt{dist/} via \texttt{expo export} (Android/Hermes) to verify bundling.
+
+Pending work (specified, not yet implemented): the network-listening sync worker with exponential backoff (\#017; backoff $\min(2^{\text{retryCount}} \cdot 15\,\text{s},\ 5\,\text{min})$), AI-generated workout summaries (\#018/\#019), gamification (\#020/\#021), the Profile screen (\#022), the route heatmap (\#025) and EAS cloud builds (\#027).
+
+\section{Verification Evidence}
+\begin{itemize}[nosep]
+    \item 575 automated tests passing; \texttt{expo-doctor} 20/20.
+    \item \texttt{expo export} succeeds for Android (Hermes) and web.
+    \item Decision log (\texttt{docs/DECISIONS.md}) records every architectural pivot with rationale --- e.g., the save-queue contract change adding \texttt{firestoreId} for idempotent retries.
+\end{itemize}
+
+\section{Known Limitations}
+\begin{itemize}[nosep]
+    \item Foreground-only tracking: locking the phone pauses the session; unsaved in-progress sessions do not survive process death.
+    \item The sync banner is a reserved slot; queued rows retry only on the next app start or manual action until \#017 lands.
+    \item Route points are capped by the Firestore document size; extremely long recordings approach the 1~MiB limit.
+    \item 14 npm audit vulnerabilities (10 moderate, 4 high) are currently unaddressed.
+\end{itemize}
+
+\section{Future Enhancements}
+\begin{enumerate}[nosep]
+    \item Background tracking via an Android foreground service and iOS background mode.
+    \item Sync worker with NetInfo-triggered retries and a visible pending-sync banner.
+    \item AI workout recaps through a callable Cloud Function proxying an LLM (server-side key).
+    \item Badges, streaks and a personal route heatmap (rules and schema already prepared).
+    \item EAS cloud builds and store distribution; km/mi unit toggle.
+\end{enumerate}
+
+% ------------------------------------------------------------
+\chapter{Conclusion}
+% ------------------------------------------------------------
+RunTrack demonstrates that a single Expo/React Native codebase can deliver a genuinely reliable fitness tracker: accurate foreground GPS capture with pause-aware statistics, a robust offline-first persistence layer backed by SQLite and Firestore, server-enforced data isolation through declarative security rules, and a typed, strictly linted, thoroughly unit-tested codebase. The architecture cleanly separates presentation (screens), state (Zustand), side effects (services) and cloud access (repositories), which kept every feature independently testable. The remaining roadmap --- background tracking, the sync worker, gamification and the heatmap --- is already specified at ticket level, providing a clear path from this working core to a production-grade product.
+
+% ------------------------------------------------------------
+% BACK MATTER
+% ------------------------------------------------------------
+\begin{thebibliography}{9}
+\addcontentsline{toc}{chapter}{References}
+
+\bibitem{expo} Expo Documentation (SDK 58). \url{https://docs.expo.dev/}
+\bibitem{router} Expo Router: File-based Navigation. \url{https://docs.expo.dev/router/introduction/}
+\bibitem{rn} React Native Documentation. \url{https://reactnative.dev/docs}
+\bibitem{firebase} Firebase Documentation --- Cloud Firestore and Authentication. \url{https://firebase.google.com/docs}
+\bibitem{firestore-rules} Firestore Security Rules Reference. \url{https://firebase.google.com/docs/firestore/security-rules}
+\bibitem{zustand} Zustand --- State Management. \url{https://github.com/pmndrs/zustand}
+\bibitem{sqlite} expo-sqlite API Reference. \url{https://docs.expo.dev/versions/latest/sdk/sqlite/}
+\bibitem{location} expo-location API Reference. \url{https://docs.expo.dev/versions/latest/sdk/location/}
+\bibitem{maps} react-native-maps. \url{https://github.com/react-native-maps/react-native-maps}
+\bibitem{vitest} Vitest Testing Framework. \url{https://vitest.dev/}
+\bibitem{haversine} R. W. Sinnott, ``Virtues of the Haversine,'' \textit{Sky and Telescope}, vol.~68, no.~2, 1984.
+
+\end{thebibliography}
+
+\appendix
+\chapter{Setup and Run Instructions}
+\begin{enumerate}[nosep]
+    \item Clone the repository and install dependencies: \texttt{npm install}.
+    \item Create \texttt{firebase.local.json} (git-ignored) with the six Firebase web-app config fields; see \texttt{docs/FIREBASE\_SETUP.md}.
+    \item Create and restrict a Google Maps API key and paste it into the \texttt{react-native-maps} plugin config in \texttt{app.json}.
+    \item Deploy rules and indexes: \texttt{npx firebase-tools deploy --only firestore:rules,firestore:indexes}.
+    \item Start the dev server: \texttt{npx expo start} (press \texttt{a} for Android, \texttt{w} for web, or scan with Expo Go).
+    \item Quality gates: \texttt{npm test}, \texttt{npm run lint}, \texttt{npm run typecheck}.
+    \item Optional demo data: \texttt{node scripts/seedActivities.mjs} seeds 7 idempotent activities.
+\end{enumerate}
+
+\chapter{How to Insert the Screenshots}
+Each grey placeholder box in this document marks where an application screenshot belongs. To replace one, capture the screen in Expo Go or a development build, save the image as \texttt{figures/<name>.png} next to this file, and replace the \texttt{\textbackslash screenshot\{Caption\}\{Description\}} call with:
+
+\begin{lstlisting}[style=tex, numbers=none]
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.75\textwidth]{figures/<name>.png}
+  \caption{<Caption>}
+\end{figure}
+\end{lstlisting}
+
+Suggested captures: (1) Track tab with map and activity selector; (2) Active tracking with HUD; (3) Summary screen; (4) History list; (5) Activity detail with route; (6) Login/Signup.
+
+\end{document}
